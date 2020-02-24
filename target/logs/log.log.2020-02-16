@@ -1,0 +1,27 @@
+2020-02-16 17:10:24 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：b15158015845@163.com开始提现==================
+2020-02-16 17:10:26 method: com.lemon.web.AutoGetMoney.main(AutoGetMoney.java:117) threadId: main - [ INFO ]--------------------登录成功-------------------
+2020-02-16 17:10:27 method: com.lemon.web.AutoGetMoney.getRenting(AutoGetMoney.java:213) threadId: main - [ INFO ]----b15158015845@163.com是【五星】用户
+2020-02-16 17:10:27 method: com.lemon.web.AutoGetMoney.mergeRent(AutoGetMoney.java:230) threadId: main - [ INFO ]----b15158015845@163.com收取租金: 0.00
+2020-02-16 17:10:28 method: com.lemon.web.AutoGetMoney.logout(AutoGetMoney.java:260) threadId: main - [ INFO ]----================== 账号：b15158015845@163.com结束提现==================
+2020-02-16 17:10:28 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：d15158015845@163.com开始提现==================
+2020-02-16 17:10:48 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：b15158015845@163.com开始提现==================
+2020-02-16 17:12:08 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：b15158015845@163.com开始提现==================
+2020-02-16 17:12:10 method: com.lemon.web.AutoGetMoney.main(AutoGetMoney.java:117) threadId: main - [ INFO ]--------------------登录成功-------------------
+2020-02-16 17:12:10 method: com.lemon.web.AutoGetMoney.getRenting(AutoGetMoney.java:213) threadId: main - [ INFO ]----b15158015845@163.com是【五星】用户
+2020-02-16 17:12:11 method: com.lemon.web.AutoGetMoney.mergeRent(AutoGetMoney.java:230) threadId: main - [ INFO ]----b15158015845@163.com收取租金: 0.00
+2020-02-16 17:12:12 method: com.lemon.web.AutoGetMoney.logout(AutoGetMoney.java:260) threadId: main - [ INFO ]----================== 账号：b15158015845@163.com结束提现==================
+2020-02-16 17:12:12 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：d15158015845@163.com开始提现==================
+2020-02-16 17:12:13 method: com.lemon.web.AutoGetMoney.main(AutoGetMoney.java:117) threadId: main - [ INFO ]--------------------登录成功-------------------
+2020-02-16 17:12:13 method: com.lemon.web.AutoGetMoney.getRenting(AutoGetMoney.java:221) threadId: main - [ INFO ]----d15158015845@163.com不是【五星】用户
+2020-02-16 17:12:13 method: com.lemon.web.AutoGetMoney.logout(AutoGetMoney.java:260) threadId: main - [ INFO ]----================== 账号：d15158015845@163.com结束提现==================
+2020-02-16 17:12:13 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：b17706132072@163.com开始提现==================
+2020-02-16 17:12:14 method: com.lemon.web.AutoGetMoney.main(AutoGetMoney.java:117) threadId: main - [ INFO ]--------------------登录成功-------------------
+2020-02-16 17:12:15 method: com.lemon.web.AutoGetMoney.getRenting(AutoGetMoney.java:213) threadId: main - [ INFO ]----b17706132072@163.com是【五星】用户
+2020-02-16 17:12:15 method: com.lemon.web.AutoGetMoney.mergeRent(AutoGetMoney.java:230) threadId: main - [ INFO ]----b17706132072@163.com收取租金: 0.00
+2020-02-16 17:12:16 method: com.lemon.web.AutoGetMoney.logout(AutoGetMoney.java:260) threadId: main - [ INFO ]----================== 账号：b17706132072@163.com结束提现==================
+2020-02-16 17:12:16 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：b13587172463@163.com开始提现==================
+2020-02-16 17:12:17 method: com.lemon.web.AutoGetMoney.main(AutoGetMoney.java:117) threadId: main - [ INFO ]--------------------登录成功-------------------
+2020-02-16 17:12:17 method: com.lemon.web.AutoGetMoney.getRenting(AutoGetMoney.java:213) threadId: main - [ INFO ]----b13587172463@163.com是【五星】用户
+2020-02-16 17:12:18 method: com.lemon.web.AutoGetMoney.mergeRent(AutoGetMoney.java:230) threadId: main - [ INFO ]----b13587172463@163.com收取租金: 0.00
+2020-02-16 17:12:18 method: com.lemon.web.AutoGetMoney.logout(AutoGetMoney.java:260) threadId: main - [ INFO ]----================== 账号：b13587172463@163.com结束提现==================
+2020-02-16 17:12:18 method: com.lemon.web.AutoGetMoney.userLogin(AutoGetMoney.java:299) threadId: main - [ INFO ]----================== 账号：n13587172463@163.com开始提现==================
