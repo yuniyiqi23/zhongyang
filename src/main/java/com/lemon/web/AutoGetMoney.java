@@ -28,79 +28,28 @@ public class AutoGetMoney extends BaseTester {
     private static List<String> nameList = Arrays.asList("叶林建", "王新兰", "毛小美", "夏发英", "李秀华", "宋荣伟", "蔡云飞");
 
 
-    @DataProvider
-    public static Object[][] dp() {
-        //得到数据列表
-        List<Object> objs = ExcelUtil.readExcel("/login.xlsx", 0,
-                LoginData.class);
-        //组装到object类型的二维数组
-        // 创建一个二维数组
-        Object[][] datas = new Object[objs.size()][];
-        for (int index = 0; index < objs.size(); index++) {
-            Object[] itemArray = {objs.get(index)};// 每个LoginFailData对象保存到一个一维数组
-            datas[index] = itemArray;// 把每个一维数组放到二维数组对应索引
-        }
-        return datas;
-    }
-
-    @Test(dataProvider = "dp")
-    public void login(LoginData userInfo) throws InterruptedException {
-        userLogin(userInfo);
-        if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
-            logger.info("----------------登录成功-------------------");
-            // 判断是否【五星】用户
-            if ("五星".equalsIgnoreCase(getText(By.xpath("//font")))) {
-                logger.info(userInfo.getAccount() + "是【五星】用户");
-//        System.out.println("用户 : " + getText(By.xpath("//font")));
-                // 点击【控制台】->【每周收租】
-//        click(By.xpath("//span[text()='控制台']"));
-//        click(By.partialLinkText("每周收租"));
-//        click(By.xpath("//a[contains(text(),'每周')]"));
-                // 进入【每周收租】
-                getRentFromWeek(userInfo);
-                // 点击【收取】
-//            click(By.xpath("//button[contains(text(),'收取')]"));
-                // 进入【收取】页面
-                driver.get("https://agent.apolloyun.com/purse");
-                // 获取当前可用租金，输入相应金额、密码
-                String moneyStr = getText(By.className("transfer-number"));
-                if ("0.00".equalsIgnoreCase(moneyStr)) {
-//                    resultFail.add(userInfo.getAccount());
-                    logger.error(userInfo.getAccount() + "收取租金: " + moneyStr);
-                } else {
-                    logger.info(userInfo.getAccount() + "收取租金: " + moneyStr);
-                    type(By.name("point"), getText(By.className("transfer-number")));
-                    type(By.name("T_WithdrawalsPsw"), userInfo.getPassword());
-//                    Thread.sleep(1000);
-                    // 点击【确认】
-                    click(By.xpath("//button[contains(text(),'确认')]"));
-                    // 添加成功的账号
-//                    resultSuccess.add(userInfo.getAccount());
-                }
-            } else {
-//                resultFail.add(userInfo.getAccount());
-                logger.info(userInfo.getAccount() + "不是【五星】用户");
-            }
-            // 点击账号->点击【退出登录】
-            logout(userInfo);
-        } else {
-//            resultFail.add(userInfo.getAccount());
-            logger.info("----------------登录失败（请检查账号和密码）-------------------");
-            Assert.assertTrue(false);
-        }
-    }
-
-    // 读取用户信息（配置文件）
+    /**
+    * @Description: 程序主入口
+    * @Param: [args]
+    * @return: void
+    * @Author: Adam
+    * @Date: 2020/2/24
+    */
     public static void main(String[] args) throws InterruptedException, MessagingException {
         // 获取浏览器驱动
         driver = WebAutoUtils.getDriver("chrome", "2.x");
         // 获取用户信息
         List<Object> userList = ExcelUtil.readExcel("/login.xlsx", 0,
                 LoginData.class);
+        if(userList == null || userList.size() == 0){
+            logger.error("获取用户信息失败，请检查文件和路径！");
+            return;
+        }
         // 获取主账号列表
         Map<String, LoginData> mainAccountMap = getMainAccountMap(userList);
         // 定时循环收取租金（间隔15min）
         while (true) {
+            logger.info("=====================> 开始本次收租 <=====================");
             // 初始化数据
             Set<String> resultSuccess = new HashSet<String>();
             Set<String> resultFail = new HashSet<String>();
@@ -173,9 +122,23 @@ public class AutoGetMoney extends BaseTester {
                 failuerInfo = "【" + str + "】、" + failuerInfo;
             }
             logger.info(failuerInfo);
+            logger.info("=====================> 结束本次收租 <=====================");
             // sleep 15min
             Thread.sleep(1000 * 60 * fixedTime);
         }
+    }
+
+    public static void main1(String[] args) throws MessagingException {
+        // 获取用户信息
+//        List<Object> userList = ExcelUtil.readExcel("/login.xlsx", 0,
+////                LoginData.class);
+////        for(Object item: userList){
+////            LoginData user = (LoginData)item;
+////            System.out.println(user);
+////        }
+//        MailUtils.sendMail("378532514@qq.com,2027708942@qq.com", "中扬联众", "测试成功！");
+
+
     }
 
     private static void getAllRent(Set<String> resultSuccess, Set<String> resultFail, LoginData mainAccount) throws InterruptedException {
@@ -275,19 +238,6 @@ public class AutoGetMoney extends BaseTester {
         click(By.xpath("//*[@id=\"pageWrapper\"]/div[1]/div[2]/div[4]"));
         click(By.xpath("//a[contains(text(),'退出登陆')]"));
         logger.info("================== 账号：" + userInfo.getAccount() + "结束提现==================");
-    }
-
-    public static void main1(String[] args) throws MessagingException {
-        // 获取用户信息
-//        List<Object> userList = ExcelUtil.readExcel("/login.xlsx", 0,
-////                LoginData.class);
-////        for(Object item: userList){
-////            LoginData user = (LoginData)item;
-////            System.out.println(user);
-////        }
-//        MailUtils.sendMail("378532514@qq.com,2027708942@qq.com", "中扬联众", "测试成功！");
-
-
     }
 
     private static void getRentFromWeek(LoginData userInfo) {
