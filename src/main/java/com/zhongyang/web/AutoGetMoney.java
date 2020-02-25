@@ -21,9 +21,8 @@ public class AutoGetMoney extends BaseTester {
     private static Map<String, String> resultFailureMap = new HashMap<String, String>();
     private static int fixedTime = 15; // 时间间隔（min）
     private static int maxRent = 40000;
-    // 不进行最收租操作的用户
+    // 不进行最收租操作的用户列表
     private static List<String> nameList = Arrays.asList("叶林建", "王新兰", "毛小美", "夏发英", "李秀华", "宋荣伟", "蔡云飞");
-
 
     /**
     * @Description: 程序主入口
