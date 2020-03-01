@@ -16,6 +16,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.mail.MessagingException;
+import javax.swing.plaf.TableHeaderUI;
 import java.util.*;
 
 public class AutoGetMoney extends BaseTester {
@@ -94,6 +95,7 @@ public class AutoGetMoney extends BaseTester {
     public static void main(String[] args) throws InterruptedException, MessagingException {
         // 获取浏览器驱动
         driver = WebAutoUtils.getDriver("chrome", "2.x");
+        driver.manage().window().maximize();
         // 获取用户信息
         List<Object> userList = ExcelUtil.readExcel("/login.xlsx", 0,
                 LoginData.class);
@@ -213,7 +215,7 @@ public class AutoGetMoney extends BaseTester {
                         // 点击【确认】
                         click(By.xpath("//button[contains(text(),'确认')]"));
                     }
-                    Thread.sleep(300);
+                    Thread.sleep(600);
                     money = Double.valueOf(getText(By.className("transfer-number")));
                 }
             }
@@ -290,7 +292,7 @@ public class AutoGetMoney extends BaseTester {
 
     }
 
-    private static void getRentFromWeek(LoginData userInfo) {
+    private static void getRentFromWeek(LoginData userInfo) throws InterruptedException {
         // 进入【每周收租】
         driver.get("https://agent.apolloyun.com/earning");
         // 选择最后一页
@@ -302,6 +304,7 @@ public class AutoGetMoney extends BaseTester {
             ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
         }
         // 判断是否有【确认】字样
+        Thread.sleep(1000);
         List<WebElement> itemBtList = driver.findElements(By.className("profit-button"));
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
