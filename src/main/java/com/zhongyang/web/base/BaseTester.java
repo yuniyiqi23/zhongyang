@@ -15,6 +15,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,6 +60,17 @@ public abstract class BaseTester {
         return getElement(by, WAITTIME);
     }
 
+    /**
+     * @Description: 显示等待元素
+     * @Param: [by]
+     * @return: org.openqa.selenium.WebElement
+     * @Author: Adam
+     * @Date: 2019/10/29
+     */
+    protected static List<WebElement> getElementList(By by) {
+        return getElementList(by, WAITTIME);
+    }
+
     protected WebElement getElement(String pageName, String locatorName) {
         Map<String, Locator> locators = LocatorUtils.getLocatorsByPageName(pageName);
         Locator locator = locators.get(locatorName);
@@ -101,6 +113,17 @@ public abstract class BaseTester {
             @Override
             public WebElement apply(WebDriver webDriver) {
                 return driver.findElement(by);
+            }
+        });
+    }
+
+    protected static List<WebElement> getElementList(final By by, long time) {
+        WebDriverWait wait = new WebDriverWait(driver, time);
+        return wait.until(new ExpectedCondition<List<WebElement>>() {
+
+            @Override
+            public List<WebElement> apply(WebDriver webDriver) {
+                return driver.findElements(by);
             }
         });
     }
