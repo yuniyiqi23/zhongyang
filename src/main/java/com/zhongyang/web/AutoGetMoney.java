@@ -191,6 +191,10 @@ public class AutoGetMoney extends BaseTester {
             List<String> nameList = Arrays.asList(PropertiesUtil.getPropertieValue("notget" +
                     ".allrent" +
                     ".users").split(","));
+//            for(String name : nameList){
+//                logger.info("name = " + name);
+//            }
+//            logger.info("mainAccount.getUserName() = " + mainAccount.getUserName());
             if (!nameList.contains(mainAccount.getUserName())) {
                 // 进入【收取】页面
                 driver.get("https://agent.apolloyun.com/purse");
@@ -249,7 +253,7 @@ public class AutoGetMoney extends BaseTester {
         driver.get("https://agent.apolloyun.com/purse/merge");
         // 获取当前可用租金，输入相应金额、密码
         String moneyStr = getText(By.className("transfer-number"));
-        logger.info(userInfo.getAccount() + "收取租金: " + moneyStr);
+        logger.info(userInfo.getAccount() + "合并租金: " + moneyStr);
         if ("0.00".equalsIgnoreCase(moneyStr)) {
             resultFail.add(userInfo.getAccount());
         } else {
@@ -311,7 +315,7 @@ public class AutoGetMoney extends BaseTester {
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
-                logger.info(userInfo.getAccount() + "收取租金！");
+                logger.info(userInfo.getAccount() + "每周收租成功！");
                 button.click();
             }
         }
