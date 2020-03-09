@@ -1,0 +1,1 @@
+java -Dfile.encoding=UTF-8 -jar "C:\Users\TW\IdeaProjects\zhongyang\target\com.zy-1.0-SNAPSHOT-jar-with-dependencies.jar"
