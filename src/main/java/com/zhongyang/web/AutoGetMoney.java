@@ -300,6 +300,7 @@ public class AutoGetMoney extends BaseTester {
     }
 
     private static void getRentFromWeek(LoginData userInfo) throws InterruptedException {
+        logger.info("----------------开始每周收租-------------------");
         // 进入【每周收租】
         driver.get("https://agent.apolloyun.com/earning");
         // 选择最后一页
@@ -319,6 +320,7 @@ public class AutoGetMoney extends BaseTester {
                 button.click();
             }
         }
+        logger.info("----------------结束每周收租-------------------");
     }
 
     private static void userLogin(LoginData userInfo) throws InterruptedException {

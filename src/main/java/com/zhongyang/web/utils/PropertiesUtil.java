@@ -41,7 +41,11 @@ public class PropertiesUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(properties.get("notget.allrent.users"));
+//        System.out.println(properties.get("notget.allrent.users"));
+        System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            
+        }
     }
 
 }
