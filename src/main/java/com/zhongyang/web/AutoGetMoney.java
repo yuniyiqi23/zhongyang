@@ -280,6 +280,7 @@ public class AutoGetMoney extends BaseTester {
     }
 
     private static void logout(LoginData userInfo) {
+        logger.info("----------------开始点击账号->点击【退出登录】-------------------");
         // 点击账号->点击【退出登录】
         click(By.xpath("//*[@id=\"pageWrapper\"]/div[1]/div[2]/div[4]"));
         click(By.xpath("//a[contains(text(),'退出登陆')]"));
