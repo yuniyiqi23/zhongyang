@@ -19,6 +19,9 @@ import javax.mail.MessagingException;
 import javax.swing.plaf.TableHeaderUI;
 import java.util.*;
 
+//合并总数的对比
+//邮件的内容（null部分）
+//思考整体方案（用户的需求，不能出错）
 public class AutoGetMoney extends BaseTester {
 
     private static Logger logger = Logger.getLogger(AutoGetMoney.class);
