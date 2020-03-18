@@ -19,17 +19,16 @@ import javax.mail.MessagingException;
 import javax.swing.plaf.TableHeaderUI;
 import java.util.*;
 
-//合并总数的对比
-//邮件的内容（null部分）
-//思考整体方案（用户的需求，不能出错）
+// ok邮件的内容（null部分）
+// ok漏收进行补救
+// 思考整体方案（用户的需求，不能出错）
 public class AutoGetMoney extends BaseTester {
 
     private static Logger logger = Logger.getLogger(AutoGetMoney.class);
     private static Map<String, String> resultFailureMap = new HashMap<String, String>();
     private static int fixedTime = 15; // 时间间隔（min）
     private static int maxRent = 40000;
-    // 不进行最收租操作的用户
-//    private static List<String> nameList = Arrays.asList("叶林建", "王新兰", "毛小美", "夏发英", "李秀华", "宋荣伟", "蔡云飞");
+    private static boolean isGetRent = false;
 
 
     @DataProvider
@@ -47,56 +46,18 @@ public class AutoGetMoney extends BaseTester {
         return datas;
     }
 
-    @Test(dataProvider = "dp")
-    public void login(LoginData userInfo) throws InterruptedException {
-        userLogin(userInfo);
-        if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
-            logger.info("----------------登录成功-------------------");
-            // 判断是否【五星】用户
-            if ("五星".equalsIgnoreCase(getText(By.xpath("//font")))) {
-                logger.info(userInfo.getAccount() + "是【五星】用户");
-//        System.out.println("用户 : " + getText(By.xpath("//font")));
-                // 点击【控制台】->【每周收租】
-//        click(By.xpath("//span[text()='控制台']"));
-//        click(By.partialLinkText("每周收租"));
-//        click(By.xpath("//a[contains(text(),'每周')]"));
-                // 进入【每周收租】
-                getRentFromWeek(userInfo);
-                // 点击【收取】
-//            click(By.xpath("//button[contains(text(),'收取')]"));
-                // 进入【收取】页面
-                driver.get("https://agent.apolloyun.com/purse");
-                // 获取当前可用租金，输入相应金额、密码
-                String moneyStr = getText(By.className("transfer-number"));
-                if ("0.00".equalsIgnoreCase(moneyStr)) {
-//                    resultFail.add(userInfo.getAccount());
-                    logger.error(userInfo.getAccount() + "收取租金: " + moneyStr);
-                } else {
-                    logger.info(userInfo.getAccount() + "收取租金: " + moneyStr);
-                    type(By.name("point"), getText(By.className("transfer-number")));
-                    type(By.name("T_WithdrawalsPsw"), userInfo.getPassword());
-//                    Thread.sleep(1000);
-                    // 点击【确认】
-                    click(By.xpath("//button[contains(text(),'确认')]"));
-                    // 添加成功的账号
-//                    resultSuccess.add(userInfo.getAccount());
-                }
-            } else {
-//                resultFail.add(userInfo.getAccount());
-                logger.info(userInfo.getAccount() + "不是【五星】用户");
-            }
-            // 点击账号->点击【退出登录】
-            logout(userInfo);
-        } else {
-//            resultFail.add(userInfo.getAccount());
-            logger.info("----------------登录失败（请检查账号和密码）-------------------");
-            Assert.assertTrue(false);
-        }
-    }
-
     // 读取用户信息（配置文件）
+
+    /**
+     * @Description: 主程序入口
+     * @Param: [args]
+     * @return: void
+     * @Author: Adam
+     * @Date: 2020/3/18
+     */
     public static void main(String[] args) {
         try {
+            logger.info(">>>>>>>>>>>>>>>>>>>开始收租<<<<<<<<<<<<<<<<<<<<<<");
             // 获取浏览器驱动
             driver = WebAutoUtils.getDriver("chrome", "2.x");
             driver.manage().window().maximize();
@@ -112,75 +73,95 @@ public class AutoGetMoney extends BaseTester {
                 Set<String> resultFail = new HashSet<String>();
 
                 // 合并租金（副账号合并到主账号）
-                for (Object obj : userList) {
-                    LoginData userInfo = (LoginData) obj;
-                    // 根据主账号列表挑选出副账号
-                    for (String key : mainAccountMap.keySet()) {
-                        if (userInfo.getUserName().equals(key)) {
-                            LoginData mainAccount = mainAccountMap.get(key);
-                            if (!userInfo.getAccount().equals(mainAccount.getAccount())) {
-                                // 用户登录
-                                userLogin(userInfo);
-                                if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
-                                    logger.info("----------------登录成功-------------------");
-                                    // 收取租金
-                                    getRenting(resultSuccess, resultFail, userInfo, mainAccount);
-                                    // 用户登出
-                                    logout(userInfo);
-                                } else {
-                                    resultFail.add(userInfo.getAccount());
-                                    logger.info("----------------登录失败（请检查账号和密码）-------------------");
-                                }
-                            }
-                        }
-                    }
+                mergeRent2MainAccount(userList, mainAccountMap, resultSuccess, resultFail);
+                // 防止漏收，在有可收租金的条件下循环收租
+                while (isGetRent) {
+                    isGetRent = false;
+                    mergeRent2MainAccount(userList, mainAccountMap, resultSuccess, resultFail);
                 }
-
                 // 提取总租金（进入主账号）
-                for (String key : mainAccountMap.keySet()) {
-                    LoginData mainAccount = mainAccountMap.get(key);
-
-                    // 用户登录
-                    userLogin(mainAccount);
-                    if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
-                        logger.info("----------------登录成功-------------------");
-                        // 获取总租金
-                        getAllRent(resultSuccess, resultFail, mainAccount);
-                        // 用户登出
-                        logout(mainAccount);
-                    } else {
-                        resultFail.add(mainAccount.getAccount());
-                        logger.info("----------------登录失败（请检查账号和密码）-------------------");
-                    }
-                }
+                getAllRent(mainAccountMap, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
                 logger.info("本次提现总人数： " + userList.size());
                 logger.info("本次提现成功人数： " + resultSuccess.size());
                 // 发送通知邮件
-                if (resultSuccess.size() > 0) {
-                    String emailStr = PropertiesUtil.getPropertieValue("email.users");
-                    List<String> adds = Arrays.asList(emailStr.split(","));
-                    // 组织邮件内容
-                    String emailContent = "";
-                    for (String key : mainAccountMap.keySet()) {
-                        LoginData mainAccount = mainAccountMap.get(key);
-                        emailContent += mainAccount.getUserName() + " 共收租： " + mainAccount.getMoney() + " ; ";
-                    }
-                    MailUtils.sendMail(adds, "中扬联众", emailContent);
-                    logger.info("恭喜您，提现成功！");
-                }
+                sendEmail2Users(mainAccountMap, resultSuccess);
+
                 logger.info("本次提现失败人数： " + resultFail.size() + " , 说明：具体原因请查看日志信息！");
                 String failuerInfo = "";
-                for (String str : resultFail) {
-                    failuerInfo = "【" + str + "】、" + failuerInfo;
+                if (resultFail != null && resultFail.size() > 0) {
+                    for (String str : resultFail) {
+                        failuerInfo = "【" + str + "】、" + failuerInfo;
+                    }
+                    logger.info(failuerInfo);
                 }
-                logger.info(failuerInfo);
                 // sleep 15min
                 Thread.sleep(1000 * 60 * fixedTime);
             }
         } catch (Exception e) {
             logger.error(e);
+        }
+    }
+
+    private static void sendEmail2Users(Map<String, LoginData> mainAccountMap, Set<String> resultSuccess) throws MessagingException {
+        if (resultSuccess.size() > 0) {
+            String emailStr = PropertiesUtil.getPropertieValue("email.users");
+            List<String> adds = Arrays.asList(emailStr.split(","));
+            // 组织邮件内容
+            String emailContent = "";
+            for (String key : mainAccountMap.keySet()) {
+                LoginData mainAccount = mainAccountMap.get(key);
+                emailContent += mainAccount.getUserName() + " 共收租： " + mainAccount.getMoney() + " ; ";
+            }
+            MailUtils.sendMail(adds, "中扬联众", emailContent);
+            logger.info("恭喜您，提现成功！");
+        }
+    }
+
+    private static void getAllRent(Map<String, LoginData> mainAccountMap, Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
+        for (String key : mainAccountMap.keySet()) {
+            LoginData mainAccount = mainAccountMap.get(key);
+
+            // 用户登录
+            login(mainAccount);
+            if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
+                logger.info("----------------登录成功-------------------");
+                // 获取总租金
+                getAllRent(resultSuccess, resultFail, mainAccount);
+                // 用户登出
+                logout(mainAccount);
+            } else {
+                resultFail.add(mainAccount.getAccount());
+                logger.info("----------------登录失败（请检查账号和密码）-------------------");
+            }
+        }
+    }
+
+    private static void mergeRent2MainAccount(List<Object> userList, Map<String, LoginData> mainAccountMap, Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
+        for (Object obj : userList) {
+            LoginData userInfo = (LoginData) obj;
+            // 根据主账号列表挑选出副账号
+            for (String key : mainAccountMap.keySet()) {
+                if (userInfo.getUserName().equals(key)) {
+                    LoginData mainAccount = mainAccountMap.get(key);
+                    if (!userInfo.getAccount().equals(mainAccount.getAccount())) {
+                        // 用户登录
+                        login(userInfo);
+                        if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
+                            logger.info("----------------登录成功-------------------");
+                            // 收取租金
+                            getRenting(resultSuccess, resultFail, userInfo, mainAccount);
+                            // 用户登出
+                            logout(userInfo);
+                        } else {
+                            resultFail.add(userInfo.getAccount());
+                            logger.info
+                                    ("----------------登录失败（请检查账号和密码是否正确）-------------------");
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -198,21 +179,20 @@ public class AutoGetMoney extends BaseTester {
 //                logger.info("name = " + name);
 //            }
 //            logger.info("mainAccount.getUserName() = " + mainAccount.getUserName());
+            // 进入【收取】页面
+            driver.get("https://agent.apolloyun.com/purse");
+            // 获取当前可用租金，输入相应金额、密码
+            String moneyStr = getText(By.className("transfer-number"));
+            // 记录总租金
+            mainAccount.setMoney(moneyStr);
+            logger.info(mainAccount.getAccount() + "收取总租金: " + moneyStr);
             if (!nameList.contains(mainAccount.getUserName())) {
-                // 进入【收取】页面
-                driver.get("https://agent.apolloyun.com/purse");
-                // 获取当前可用租金，输入相应金额、密码
-                String moneyStr = getText(By.className("transfer-number"));
-                // 记录总租金
-                mainAccount.setMoney(moneyStr);
-                logger.info(mainAccount.getAccount() + "收取总租金: " + moneyStr);
                 double money = Double.valueOf(moneyStr);
                 if (money > 0) {
                     // 添加提现成功的账号
                     resultSuccess.add(mainAccount.getAccount());
-                } else {
-                    resultFail.add(mainAccount.getAccount());
                 }
+                // 根据总金额提取租金
                 while (money > 0) {
                     // 判断总租金是否大于 maxRent
                     if (money > maxRent) {
@@ -257,9 +237,7 @@ public class AutoGetMoney extends BaseTester {
         // 获取当前可用租金，输入相应金额、密码
         String moneyStr = getText(By.className("transfer-number"));
         logger.info(userInfo.getAccount() + "合并租金: " + moneyStr);
-        if ("0.00".equalsIgnoreCase(moneyStr)) {
-            resultFail.add(userInfo.getAccount());
-        } else {
+        if (!"0.00".equalsIgnoreCase(moneyStr)) {
             type(By.name("point"), moneyStr);
             type(By.name("T_WithdrawalsPsw"), userInfo.getSecondPassword());
             type(By.name("T_MergeID"), mainAccount.getAccount());
@@ -271,6 +249,13 @@ public class AutoGetMoney extends BaseTester {
         }
     }
 
+    /**
+     * @Description: 获取主账号列表
+     * @Param: [userList]
+     * @return: java.util.Map<java.lang.String               ,               com.zhongyang.web.pojo.LoginData>
+     * @Author: Adam
+     * @Date: 2020/3/18
+     */
     private static Map<String, LoginData> getMainAccountMap(List<Object> userList) {
         Map<String, LoginData> mainAccountMap = new LinkedHashMap<>();
         for (Object item : userList) {
@@ -282,10 +267,36 @@ public class AutoGetMoney extends BaseTester {
         return mainAccountMap;
     }
 
+    /**
+     * @Description: 用户登录
+     * @Param: [userInfo]
+     * @return: void
+     * @Author: Adam
+     * @Date: 2020/3/18
+     */
+    private static void login(LoginData userInfo) throws InterruptedException {
+        logger.info("================== 账号：" + userInfo.getAccount() + "开始提现==================");
+        // 登录网址
+        driver.get("https://agent.apolloyun.com/login");
+        // 输入用户名和密码
+        type(By.name("T_Email"), userInfo.getAccount());
+        type(By.name("password"), userInfo.getPassword());
+        // 点击【登录】
+        click(By.xpath("//button[contains(text(),'登录')]"));
+        Thread.sleep(500);
+    }
+
+    /**
+     * @Description: 用户退出
+     * @Param: [userInfo]
+     * @return: void
+     * @Author: Adam
+     * @Date: 2020/3/18
+     */
     private static void logout(LoginData userInfo) {
-        logger.info("----------------开始点击账号->点击【退出登录】-------------------");
+        logger.info("----------------开始【退出登录】-------------------");
         // 点击账号->点击【退出登录】
-        click(By.xpath("//*[@id=\"pageWrapper\"]/div[1]/div[2]/div[4]"));
+        click(By.xpath("//*[@id=\"pageWrapper\"]/div[1]/div[2]/div[4]/button"));
         click(By.xpath("//a[contains(text(),'退出登陆')]"));
         logger.info("================== 账号：" + userInfo.getAccount() + "结束提现==================");
     }
@@ -303,6 +314,13 @@ public class AutoGetMoney extends BaseTester {
 
     }
 
+    /**
+     * @Description: 每周收租
+     * @Param: [userInfo]
+     * @return: void
+     * @Author: Adam
+     * @Date: 2020/3/18
+     */
     private static void getRentFromWeek(LoginData userInfo) throws InterruptedException {
         logger.info("----------------开始每周收租-------------------");
         // 进入【每周收租】
@@ -310,34 +328,25 @@ public class AutoGetMoney extends BaseTester {
         // 选择最后一页
         List<WebElement> itemList = getElementList(By.className("page-item"));
         int itemSize = itemList.size();
+//        Thread.sleep(1000);
         if (itemSize >= 2) {
-            (itemList.get(itemSize - 2)).click();
             // 滚动最底部
-            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
+//            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
+            (itemList.get(itemSize - 2)).click();
         }
         // 判断是否有【确认】字样
-//        Thread.sleep(1000);
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
                 logger.info(userInfo.getAccount() + "每周收租成功！");
                 button.click();
+                // 判断是否有租金可收
+                isGetRent = true;
             }
         }
         logger.info("----------------结束每周收租-------------------");
     }
 
-    private static void userLogin(LoginData userInfo) throws InterruptedException {
-        logger.info("================== 账号：" + userInfo.getAccount() + "开始提现==================");
-        // 登录网址
-        driver.get("https://agent.apolloyun.com/login");
-        // 输入用户名和密码
-        type(By.name("T_Email"), userInfo.getAccount());
-        type(By.name("password"), userInfo.getPassword());
-        // 点击【登录】
-        click(By.xpath("//button[contains(text(),'登录')]"));
-        Thread.sleep(500);
-    }
 
     @Test(dataProvider = "dp")
     public void testWebSite() throws InterruptedException {
