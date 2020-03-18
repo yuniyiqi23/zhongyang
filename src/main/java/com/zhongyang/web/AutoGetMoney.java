@@ -19,9 +19,6 @@ import javax.mail.MessagingException;
 import javax.swing.plaf.TableHeaderUI;
 import java.util.*;
 
-// ok邮件的内容（null部分）
-// ok漏收进行补救
-// 思考整体方案（用户的需求，不能出错）
 public class AutoGetMoney extends BaseTester {
 
     private static Logger logger = Logger.getLogger(AutoGetMoney.class);
@@ -83,8 +80,8 @@ public class AutoGetMoney extends BaseTester {
                 getAllRent(mainAccountMap, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
-                logger.info("本次提现总人数： " + userList.size());
-                logger.info("本次提现成功人数： " + resultSuccess.size());
+                logger.info("本次收租总人数： " + userList.size());
+                logger.info("本次收租成功人数： " + resultSuccess.size());
                 // 发送通知邮件
                 sendEmail2Users(mainAccountMap, resultSuccess);
 
@@ -185,7 +182,7 @@ public class AutoGetMoney extends BaseTester {
             String moneyStr = getText(By.className("transfer-number"));
             // 记录总租金
             mainAccount.setMoney(moneyStr);
-            logger.info(mainAccount.getAccount() + "收取总租金: " + moneyStr);
+            logger.info(mainAccount.getAccount() + " 收取总租金: " + moneyStr);
             if (!nameList.contains(mainAccount.getUserName())) {
                 double money = Double.valueOf(moneyStr);
                 if (money > 0) {
@@ -236,7 +233,7 @@ public class AutoGetMoney extends BaseTester {
         driver.get("https://agent.apolloyun.com/purse/merge");
         // 获取当前可用租金，输入相应金额、密码
         String moneyStr = getText(By.className("transfer-number"));
-        logger.info(userInfo.getAccount() + "合并租金: " + moneyStr);
+        logger.info(userInfo.getAccount() + " 合并租金: " + moneyStr);
         if (!"0.00".equalsIgnoreCase(moneyStr)) {
             type(By.name("point"), moneyStr);
             type(By.name("T_WithdrawalsPsw"), userInfo.getSecondPassword());
@@ -252,7 +249,7 @@ public class AutoGetMoney extends BaseTester {
     /**
      * @Description: 获取主账号列表
      * @Param: [userList]
-     * @return: java.util.Map<java.lang.String               ,               com.zhongyang.web.pojo.LoginData>
+     * @return: java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               com.zhongyang.web.pojo.LoginData>
      * @Author: Adam
      * @Date: 2020/3/18
      */
