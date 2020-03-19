@@ -129,7 +129,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.lemon.web.AutoGetMoney
+                            <mainClass>com.zhongyang.web.AutoGetMoney
                             </mainClass>
                         </manifest>
                     </archive>
