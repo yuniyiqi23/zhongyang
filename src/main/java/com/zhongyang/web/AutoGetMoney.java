@@ -19,13 +19,14 @@ import javax.mail.MessagingException;
 import javax.swing.plaf.TableHeaderUI;
 import java.util.*;
 
+// 兼容冻结账号的情况
 public class AutoGetMoney extends BaseTester {
 
     private static Logger logger = Logger.getLogger(AutoGetMoney.class);
     private static Map<String, String> resultFailureMap = new HashMap<String, String>();
     private static int fixedTime = 15; // 时间间隔（min）
     private static int maxRent = 40000;
-    private static boolean isGetRent = false;
+    private static boolean isGetRent = true;
 
 
     @DataProvider
@@ -70,7 +71,6 @@ public class AutoGetMoney extends BaseTester {
                 Set<String> resultFail = new HashSet<String>();
 
                 // 合并租金（副账号合并到主账号）
-                mergeRent2MainAccount(userList, mainAccountMap, resultSuccess, resultFail);
                 // 防止漏收，在有可收租金的条件下循环收租
                 while (isGetRent) {
                     isGetRent = false;
@@ -154,7 +154,8 @@ public class AutoGetMoney extends BaseTester {
                         } else {
                             resultFail.add(userInfo.getAccount());
                             logger.info
-                                    ("----------------登录失败（请检查账号和密码是否正确）-------------------");
+                                    ("----------------登录失败（请检查账号和密码是否正确" +
+                                            "）-------------------");
                         }
                     }
                 }
