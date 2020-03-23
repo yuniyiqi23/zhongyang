@@ -75,6 +75,7 @@ public class MailUtils {
     public static void main(String[] args) throws AddressException, MessagingException {
         String emailStr = PropertiesUtil.getPropertieValue("email.users");
         List<String> adds = Arrays.asList(emailStr.split(","));
-        MailUtils.sendMail(adds, "中扬联众", "测试成功123！");
+        MailUtils.sendMail(adds, "中扬联众",
+                "<div>你不在学校吗？</div><br/><hr/><div>记得28号来学校</div>");
     }
 }
