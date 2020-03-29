@@ -138,7 +138,7 @@ public class AutoGetMoney extends BaseTester {
             if (statisticsFailAccountList.size() > 0) {
                 emailContent += "<hr/><div>漏收账号信息：";
                 for (LoginData user : statisticsFailAccountList) {
-                    emailContent += "【" + user.getAccount() + "】、";
+                    emailContent += user.getUserName() + "【" + user.getAccount() + "】、";
                 }
             }
             emailContent += "</div><br/>";
@@ -393,6 +393,7 @@ public class AutoGetMoney extends BaseTester {
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
+                Thread.sleep(500);
                 button.click();
                 logger.info(userInfo.getAccount() + "每周收租成功！");
                 // 判断是否有租金可收
