@@ -28,7 +28,6 @@ public class AutoGetMoney extends BaseTester {
     private static int maxRent = 40000;
     private static boolean isGetRent = true;
 
-
     @DataProvider
     public static Object[][] dp() {
         //得到数据列表
@@ -43,8 +42,6 @@ public class AutoGetMoney extends BaseTester {
         }
         return datas;
     }
-
-    // 读取用户信息（配置文件）
 
     /**
      * @Description: 主程序入口
@@ -167,9 +164,8 @@ public class AutoGetMoney extends BaseTester {
     }
 
     private static void mergeRent2MainAccount(List<Object> userList, Map<String, LoginData>
-            mainAccountMap, List<LoginData> statisticsFailAccountList,
-                                              List<LoginData>
-                                                      failAccountList, Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
+            mainAccountMap, List<LoginData> statisticsFailAccountList, List<LoginData>
+             failAccountList, Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
         // 补收账号
         if (statisticsFailAccountList.size() > 0) {
             for (Object obj : statisticsFailAccountList) {
@@ -275,7 +271,7 @@ public class AutoGetMoney extends BaseTester {
             // 将账号租金转入主账号
             mergeRent(failAccountList, resultSuccess, resultFail, userInfo,
                     mainAccount);
-            Thread.sleep(700);
+            Thread.sleep(600);
         } else {
             resultFail.add(userInfo.getAccount());
             logger.info(userInfo.getAccount() + "不是【五星】用户");
@@ -338,7 +334,7 @@ public class AutoGetMoney extends BaseTester {
         type(By.name("password"), userInfo.getPassword());
         // 点击【登录】
         click(By.xpath("//button[contains(text(),'登录')]"));
-        Thread.sleep(500);
+        Thread.sleep(300);
     }
 
     /**
@@ -383,6 +379,7 @@ public class AutoGetMoney extends BaseTester {
         // 选择最后一页
         List<WebElement> itemList = getElementList(By.className("page-item"));
         int itemSize = itemList.size();
+        logger.info("itemSize = " + itemSize);
 //        Thread.sleep(1000);
         if (itemSize >= 2) {
             // 滚动最底部
@@ -391,6 +388,7 @@ public class AutoGetMoney extends BaseTester {
         }
         // 判断是否有【确认】字样
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
+        logger.info("itemBtListSize = " + itemBtList.size());
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
                 Thread.sleep(500);
