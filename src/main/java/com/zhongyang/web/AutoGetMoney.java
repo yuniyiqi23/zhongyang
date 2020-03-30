@@ -111,6 +111,8 @@ public class AutoGetMoney extends BaseTester {
                 }
                 // sleep 15min
                 Thread.sleep(1000 * 60 * fixedTime);
+                // 设置isGetRent = true，开启下一次收租
+                isGetRent = true;
             }
         } catch (Exception e) {
             logger.error(e);
