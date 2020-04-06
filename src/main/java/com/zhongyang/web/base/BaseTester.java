@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
@@ -17,6 +18,7 @@ import org.testng.annotations.BeforeSuite;
 
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
 
 /**
  * @program: JavaAutoTest
@@ -108,6 +110,7 @@ public abstract class BaseTester {
      */
     protected static WebElement getElement(final By by, long time) {
         WebDriverWait wait = new WebDriverWait(driver, time);
+//        return wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(by)));
         return wait.until(new ExpectedCondition<WebElement>() {
 
             @Override
@@ -117,6 +120,13 @@ public abstract class BaseTester {
         });
     }
 
+    /** 
+    * @Description:  
+    * @Param: [by, time] 
+    * @return: List<WebElement> 
+    * @Author: Adam
+    * @Date: 2020/4/5 
+    */
     protected static List<WebElement> getElementList(final By by, long time) {
         WebDriverWait wait = new WebDriverWait(driver, time);
         return wait.until(new ExpectedCondition<List<WebElement>>() {
@@ -231,6 +241,10 @@ public abstract class BaseTester {
      */
     protected static String getText(By by) {
         return getElement(by).getText();
+    }
+
+    protected static String getAttribute(By by, String att) {
+        return getElement(by).getAttribute(att);
     }
 
     /**

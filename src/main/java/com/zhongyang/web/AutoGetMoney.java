@@ -19,7 +19,6 @@ import javax.mail.MessagingException;
 import javax.swing.plaf.TableHeaderUI;
 import java.util.*;
 
-// 兼容冻结账号的情况
 public class AutoGetMoney extends BaseTester {
 
     private static Logger logger = Logger.getLogger(AutoGetMoney.class);
@@ -122,7 +121,7 @@ public class AutoGetMoney extends BaseTester {
     private static void sendEmail2Users(Map<String, LoginData> mainAccountMap,
                                         Set<String> resultSuccess, List<LoginData> statisticsFailAccountList) throws
             MessagingException {
-        if (resultSuccess.size() > 0) {
+//        if (resultSuccess.size() > 0) {
             String emailStr = PropertiesUtil.getPropertieValue("email.users");
             List<String> adds = Arrays.asList(emailStr.split(","));
             // 组织邮件内容
@@ -142,8 +141,8 @@ public class AutoGetMoney extends BaseTester {
             }
             emailContent += "</div><br/>";
             MailUtils.sendMail(adds, "中扬联众", emailContent);
-            logger.info("恭喜您，提现成功！");
-        }
+//            logger.info("恭喜您，提现成功！");
+//        }
     }
 
     private static void getAllRent(Map<String, LoginData> mainAccountMap, Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
@@ -381,7 +380,7 @@ public class AutoGetMoney extends BaseTester {
         // 选择最后一页
         List<WebElement> itemList = getElementList(By.className("page-item"));
         int itemSize = itemList.size();
-        logger.info("itemSize = " + itemSize);
+//        logger.info("itemSize = " + itemSize);
 //        Thread.sleep(1000);
         if (itemSize >= 2) {
             // 滚动最底部
@@ -390,10 +389,14 @@ public class AutoGetMoney extends BaseTester {
         }
         // 判断是否有【确认】字样
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
-        logger.info("itemBtListSize = " + itemBtList.size());
+        if(itemBtList.size() > 0){
+            WebElement button = itemBtList.get(itemBtList.size() - 1);
+            button.click();
+            logger.info("lastBtText = " + button.getText());
+        }
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
-                Thread.sleep(500);
+                Thread.sleep(600);
                 button.click();
                 logger.info(userInfo.getAccount() + "每周收租成功！");
                 // 判断是否有租金可收
