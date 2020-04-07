@@ -20,6 +20,7 @@ import java.util.*;
  * @create: 2020-04-06 10:35
  */
 public class SetBankInfo extends BaseTester {
+    // 绑定失败提示信息
     // 登出前判断按钮是否可点击
 
     private static Logger logger = Logger.getLogger(SetBankInfo.class);
@@ -74,7 +75,7 @@ public class SetBankInfo extends BaseTester {
             type(By.name("T_AccountNo"), user.getBankAccount());
             // 点击【确认】
             click(By.className("submit"));
-            Thread.sleep(300);
+            Thread.sleep(500);
         }
     }
 
