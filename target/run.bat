@@ -1,1 +1,1 @@
-java -jar "C:\Users\Adam Smith\IdeaProjects\AutoGetMoney\target\com.zy-1.0-SNAPSHOT-jar-with-dependencies.jar"
+java -Dfile.encoding=UTF-8 -jar "C:\Users\Adam Smith\IdeaProjects\AutoGetMoney\target\com.zy-1.0-SNAPSHOT-jar-with-dependencies.jar"
