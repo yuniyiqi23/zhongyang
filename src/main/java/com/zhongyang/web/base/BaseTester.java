@@ -63,6 +63,22 @@ public abstract class BaseTester {
     }
 
     /**
+    * @Description: 判断元素是否存在
+    * @Param: [by]
+    * @return: boolean
+    * @Author: Adam
+    * @Date: 2020/4/19
+    */
+    protected static boolean isExistElement(By by) {
+        try {
+            getElement(by);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * @Description: 显示等待元素
      * @Param: [by]
      * @return: org.openqa.selenium.WebElement

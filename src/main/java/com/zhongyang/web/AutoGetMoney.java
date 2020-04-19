@@ -26,6 +26,8 @@ public class AutoGetMoney extends BaseTester {
     private static int fixedTime = 15; // 时间间隔（min）
     private static int maxRent = 40000;
     private static boolean isGetRent = true;
+    private static List<LoginData> collectedAccountList = new ArrayList<>();
+    private static String collectedTime = "2020-04-12";
 
     @DataProvider
     public static Object[][] dp() {
@@ -90,6 +92,7 @@ public class AutoGetMoney extends BaseTester {
                         logger.info(failuerAccountInfo);
                     }
                     failAccountList = new ArrayList<>();
+                    collectedAccountList = new ArrayList<>();
                 }
                 // 提取总租金（进入主账号）
                 getAllRent(mainAccountMap, resultSuccess, resultFail);
@@ -296,7 +299,9 @@ public class AutoGetMoney extends BaseTester {
             resultSuccess.add(userInfo.getAccount());
         } else {
             // 收集漏收的账号信息
-            failAccountList.add(userInfo);
+            //if(!collectedAccountList.contains(userInfo)){
+                failAccountList.add(userInfo);
+            //}
         }
     }
 
@@ -380,7 +385,7 @@ public class AutoGetMoney extends BaseTester {
         // 选择最后一页
         List<WebElement> itemList = getElementList(By.className("page-item"));
         int itemSize = itemList.size();
-//        logger.info("itemSize = " + itemSize);
+        logger.info("itemSize = " + itemSize);
 //        Thread.sleep(1000);
         if (itemSize >= 2) {
             // 滚动最底部
@@ -389,20 +394,25 @@ public class AutoGetMoney extends BaseTester {
         }
         // 判断是否有【确认】字样
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
-        if(itemBtList.size() > 0){
-            WebElement button = itemBtList.get(itemBtList.size() - 1);
-            button.click();
-            logger.info("lastBtText = " + button.getText());
-        }
+//        if(itemBtList.size() > 0){
+//            WebElement button = itemBtList.get(itemBtList.size() - 1);
+//            button.click();
+//            logger.info("lastBtText = " + button.getText());
+//        }
+        // 判断是否已经被收取
+//        if(isExistElement(By.xpath("//*[@id='container']/tbody//td[contains(text()," + collectedTime +
+//                ")]"))){
+//            collectedAccountList.add(userInfo);
+//        }
         for (WebElement button : itemBtList) {
             if ("确认".equalsIgnoreCase(button.getText())) {
-                Thread.sleep(600);
                 button.click();
                 logger.info(userInfo.getAccount() + "每周收租成功！");
                 // 判断是否有租金可收
                 isGetRent = true;
             }
         }
+        Thread.sleep(600);
         logger.info("----------------结束每周收租-------------------");
     }
 
