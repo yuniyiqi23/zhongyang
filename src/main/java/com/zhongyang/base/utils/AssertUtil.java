@@ -1,12 +1,12 @@
 package com.zhongyang.base.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.zhongyang.base.pojo.ApiCaseDetail;
 import com.zhongyang.base.pojo.ExpectedRespKeyInfo;
 import org.testng.Assert;
-
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -47,4 +47,26 @@ public class AssertUtil {
         }
 
     }
+
+    public static void main(String[] args) {
+        String str = "$.success:true|$.errorCode:0";
+        // 分割字符串
+        String[] strArray = str.split("\\|");
+        if (strArray != null && strArray.length > 0) {
+            JSONArray assertArray = new JSONArray();
+            for (String arr : strArray) {
+                String[] itemArray = arr.split(":");
+                JSONObject object = new JSONObject();
+                object.put(itemArray[0], itemArray[1]);
+                assertArray.add(object);
+            }
+            for (Object item : assertArray) {
+                JSONObject json = (JSONObject)item;
+                System.out.println(json.toString());
+            }
+        }
+        System.out.println("");
+    }
+
+
 }
