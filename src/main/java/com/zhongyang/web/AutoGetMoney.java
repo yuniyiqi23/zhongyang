@@ -103,6 +103,7 @@ public class AutoGetMoney extends BaseTester {
                 getAllRent(mainAccountMap, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
+                logger.info("应收总数：王新兰=77400,毛小美=14400,王金兰=9000,叶林建=21600,蔡云飞=36000");
                 logger.info("本次收租总人数： " + userList.size());
                 logger.info("本次收租成功人数： " + resultSuccess.size());
                 // 发送邮件(收租开始才发送)
@@ -293,7 +294,7 @@ public class AutoGetMoney extends BaseTester {
         driver.get("https://agent.apolloyun.com/purse/merge");
         // 获取当前可用租金，输入相应金额、密码
         String moneyStr = getText(By.className("transfer-number"));
-        logger.info(userInfo.getAccount() + " 合并收租: " + moneyStr);
+        logger.info(userInfo.getAccount() + "(" + userInfo.getUserName() + ") 合并收租: " + moneyStr);
         if (!"0.00".equalsIgnoreCase(moneyStr)) {
             type(By.name("point"), moneyStr);
             type(By.name("T_WithdrawalsPsw"), userInfo.getSecondPassword());
@@ -398,17 +399,21 @@ public class AutoGetMoney extends BaseTester {
 
         // 判断是否已经被收取
         List<WebElement> trlist = getElementList(By.xpath("//*/table/tbody/tr"));
-        String trText = trlist.get(trlist.size() - 1).getText();
-        if (trText != null || trText != "") {
-            // 当前已经可以开始收租
-            if (trText.indexOf(collectedTime) != -1) {
-                // 判断是否已经收租
-                if (trText.indexOf(collectedTime) != trText.lastIndexOf(collectedTime)) {
-                    collectedAccountList.add(userInfo);
+        if (trlist != null && trlist.size() > 0) {
+            String trText = trlist.get(trlist.size() - 1).getText();
+            if (trText != null || trText != "") {
+                // 当前已经可以开始收租
+                if (trText.indexOf(collectedTime) != -1) {
+                    // 判断是否已经收租
+                    if (trText.indexOf(collectedTime) != trText.lastIndexOf(collectedTime)) {
+                        collectedAccountList.add(userInfo);
+                    }
                 }
+            } else {
+                logger.error("无法获取trText! " + userInfo.getAccount() + " " + userInfo.getUserName());
             }
         } else {
-            logger.error("无法获取trText! " + userInfo.getAccount() + " " + userInfo.getUserName());
+            collectedAccountList.add(userInfo);
         }
         // 判断是否有【确认】字样
         List<WebElement> itemBtList = getElementList(By.className("profit-button"));
