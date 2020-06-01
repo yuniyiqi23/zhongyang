@@ -25,7 +25,7 @@ public class AutoGetMoney extends BaseTester {
 
     private static Logger logger = Logger.getLogger(AutoGetMoney.class);
     private static Map<String, String> resultFailureMap = new HashMap<String, String>();
-    private static int fixedTime = 15; // 时间间隔（min）
+    private static int fixedTime = 2; // 时间间隔（min）
     private static int maxRent = 40000;
     private static boolean isGetRent = true;
     private static List<LoginData> collectedAccountList = new ArrayList<>();
