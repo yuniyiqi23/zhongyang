@@ -103,7 +103,7 @@ public class AutoGetMoney extends BaseTester {
                 getAllRent(mainAccountMap, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
-                logger.info("应收总数：王新兰=77400,毛小美=14400,王金兰=9000,叶林建=21600,蔡云飞=36000");
+                logger.info("应收总数：王新兰=76500,毛小美=17000,王金兰=8500,叶林建=20400,蔡云飞=42500");
                 logger.info("本次收租总人数： " + userList.size());
                 logger.info("本次收租成功人数： " + resultSuccess.size());
                 // 发送邮件(收租开始才发送)
