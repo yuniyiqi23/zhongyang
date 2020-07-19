@@ -103,7 +103,7 @@ public class AutoGetMoney extends BaseTester {
                 getAllRent(mainAccountMap, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
-                logger.info("应收总数：王新兰=77400,毛小美=14400,王金兰=9000,叶林建=21600,蔡云飞=36000");
+                logger.info("应收总数：王新兰=76500,毛小美=17000,王金兰=8500,叶林建=20400,蔡云飞=42500");
                 logger.info("本次收租总人数： " + userList.size());
                 logger.info("本次收租成功人数： " + resultSuccess.size());
                 // 发送邮件(收租开始才发送)
@@ -228,13 +228,9 @@ public class AutoGetMoney extends BaseTester {
             getRentFromWeek(mainAccount);
 
             // 判断用户是否进行最后的总租金收取操作
-            List<String> nameList = Arrays.asList(PropertiesUtil.getPropertieValue("notget" +
+           /* List<String> nameList = Arrays.asList(PropertiesUtil.getPropertieValue("notget" +
                     ".allrent" +
-                    ".users").split(","));
-//            for(String name : nameList){
-//                logger.info("name = " + name);
-//            }
-//            logger.info("mainAccount.getUserName() = " + mainAccount.getUserName());
+                    ".users").split(","));*/
             // 进入【收取】页面
             driver.get("https://agent.apolloyun.com/purse");
             // 获取当前可用租金，输入相应金额、密码
@@ -242,7 +238,7 @@ public class AutoGetMoney extends BaseTester {
             // 记录总租金
             mainAccount.setMoney(moneyStr);
             logger.info(mainAccount.getAccount() + " 收取总租金: " + moneyStr);
-            if (!nameList.contains(mainAccount.getUserName())) {
+            /*if (!nameList.contains(mainAccount.getUserName())) {
                 double money = Double.valueOf(moneyStr);
                 if (money > 0) {
                     // 添加提现成功的账号
@@ -265,7 +261,7 @@ public class AutoGetMoney extends BaseTester {
                     Thread.sleep(600);
                     money = Double.valueOf(getText(By.className("transfer-number")));
                 }
-            }
+            }*/
         } else {
             resultFail.add(mainAccount.getAccount());
             logger.info(mainAccount.getAccount() + "不是【五星】用户");
