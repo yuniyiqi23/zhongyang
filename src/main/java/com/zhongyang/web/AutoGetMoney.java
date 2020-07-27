@@ -265,6 +265,10 @@ public class AutoGetMoney extends BaseTester {
         } else {
             resultFail.add(mainAccount.getAccount());
             logger.info(mainAccount.getAccount() + "不是【五星】用户");
+//            Thread.sleep(1200);
+            // 关闭提示框
+//            WebElement tipElement = getElement(By.className("close"));
+//            tipElement.click();
         }
     }
 
