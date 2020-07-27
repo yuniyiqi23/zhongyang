@@ -103,7 +103,7 @@ public class AutoGetMoney extends BaseTester {
                 getAllRent(mainAccountMap, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
-                logger.info("应收总数：王新兰=76500,毛小美=17000,王金兰=8500,叶林建=20400,蔡云飞=42500");
+//                logger.info("应收总数：王新兰=76500,毛小美=17000,王金兰=8500,叶林建=20400,蔡云飞=42500");
                 logger.info("本次收租总人数： " + userList.size());
                 logger.info("本次收租成功人数： " + resultSuccess.size());
                 // 发送邮件(收租开始才发送)
@@ -265,10 +265,6 @@ public class AutoGetMoney extends BaseTester {
         } else {
             resultFail.add(mainAccount.getAccount());
             logger.info(mainAccount.getAccount() + "不是【五星】用户");
-//            Thread.sleep(1200);
-            // 关闭提示框
-//            WebElement tipElement = getElement(By.className("close"));
-//            tipElement.click();
         }
     }
 
@@ -286,6 +282,10 @@ public class AutoGetMoney extends BaseTester {
         } else {
             resultFail.add(userInfo.getAccount());
             logger.info(userInfo.getAccount() + "不是【五星】用户");
+            // 关闭提示框
+            Thread.sleep(1000);
+            WebElement tipElement = getElement(By.className("close"));
+            tipElement.click();
         }
     }
 
