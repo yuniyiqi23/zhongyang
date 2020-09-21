@@ -284,8 +284,8 @@ public class AutoGetMoney extends BaseTester {
             logger.info(userInfo.getAccount() + "不是【五星】用户");
             // 关闭提示框
             Thread.sleep(1000);
-            WebElement tipElement = getElement(By.className("close"));
-            tipElement.click();
+//            WebElement tipElement = getElement(By.className("close"));
+//            tipElement.click();
         }
     }
 
