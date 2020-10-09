@@ -27,7 +27,7 @@ public class AutoGetMoney extends BaseTester {
     private static Map<String, String> resultFailureMap = new HashMap<String, String>();
     private static int fixedTime = 3; // 时间间隔（min）
     private static int maxRent = 40000;
-    private static boolean isGetRent = true;
+    private static boolean isGetRent = false;
     private static List<LoginData> collectedAccountList = new ArrayList<>();
     private static String collectedTime = "2020-05-17";
 
@@ -100,7 +100,7 @@ public class AutoGetMoney extends BaseTester {
                     collectedAccountList = new ArrayList<>();
                 }
                 // 提取总租金（进入主账号）
-                getAllRent(mainAccountMap, resultSuccess, resultFail);
+                getAllRent(userList, resultSuccess, resultFail);
 
                 // 输出提现结果，标记提现成功
 //                logger.info("应收总数：王新兰=76500,毛小美=17000,王金兰=8500,叶林建=20400,蔡云飞=42500");
@@ -155,20 +155,20 @@ public class AutoGetMoney extends BaseTester {
 //        }
     }
 
-    private static void getAllRent(Map<String, LoginData> mainAccountMap, Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
-        for (String key : mainAccountMap.keySet()) {
-            LoginData mainAccount = mainAccountMap.get(key);
-
+    private static void getAllRent(List<Object> userList,
+                                   Set<String> resultSuccess, Set<String> resultFail) throws InterruptedException {
+        for (Object item : userList) {
+            LoginData user = (LoginData) item;
             // 用户登录
-            login(mainAccount);
+            login(user);
             if ("https://agent.apolloyun.com/".equalsIgnoreCase(driver.getCurrentUrl())) {
                 logger.info("----------------登录成功-------------------");
                 // 获取总租金
-                getAllRent(resultSuccess, resultFail, mainAccount);
+                getAllRent(resultSuccess, resultFail, user);
                 // 用户登出
-                logout(mainAccount);
+                logout(user);
             } else {
-                resultFail.add(mainAccount.getAccount());
+                resultFail.add(user.getAccount());
                 logger.info("----------------登录失败（请检查账号和密码）-------------------");
             }
         }
@@ -238,30 +238,14 @@ public class AutoGetMoney extends BaseTester {
             // 记录总租金
             mainAccount.setMoney(moneyStr);
             logger.info(mainAccount.getAccount() + " 收取总租金: " + moneyStr);
-            /*if (!nameList.contains(mainAccount.getUserName())) {
-                double money = Double.valueOf(moneyStr);
-                if (money > 0) {
-                    // 添加提现成功的账号
-                    resultSuccess.add(mainAccount.getAccount());
-                }
-                // 根据总金额提取租金
-                while (money > 0) {
-                    // 判断总租金是否大于 maxRent
-                    if (money > maxRent) {
-                        type(By.name("point"), String.valueOf(maxRent));
-                        type(By.name("T_WithdrawalsPsw"), mainAccount.getSecondPassword());
-                        // 点击【确认】
-                        click(By.xpath("//button[contains(text(),'确认')]"));
-                    } else {
-                        type(By.name("point"), moneyStr);
-                        type(By.name("T_WithdrawalsPsw"), mainAccount.getSecondPassword());
-                        // 点击【确认】
-                        click(By.xpath("//button[contains(text(),'确认')]"));
-                    }
-                    Thread.sleep(600);
-                    money = Double.valueOf(getText(By.className("transfer-number")));
-                }
-            }*/
+            double money = Double.valueOf(moneyStr);
+            if (money > 0) {
+                type(By.name("point"), moneyStr);
+                type(By.name("T_WithdrawalsPsw"), mainAccount.getSecondPassword());
+                // 点击【确认】
+                click(By.xpath("//button[contains(text(),'确认')]"));
+                Thread.sleep(700);
+            }
         } else {
             resultFail.add(mainAccount.getAccount());
             logger.info(mainAccount.getAccount() + "不是【五星】用户");
@@ -283,9 +267,9 @@ public class AutoGetMoney extends BaseTester {
             resultFail.add(userInfo.getAccount());
             logger.info(userInfo.getAccount() + "不是【五星】用户");
             // 关闭提示框
-            Thread.sleep(1000);
-            WebElement tipElement = getElement(By.className("close"));
-            tipElement.click();
+//            Thread.sleep(1000);
+//            WebElement tipElement = getElement(By.className("close"));
+//            tipElement.click();
         }
     }
 
@@ -360,7 +344,9 @@ public class AutoGetMoney extends BaseTester {
     private static void logout(LoginData userInfo) {
         logger.info("----------------开始【退出登录】-------------------");
         // 点击账号->点击【退出登录】
+        logger.info("点击账号");
         click(By.xpath("//*[@id=\"pageWrapper\"]/div[1]/div[2]/div[4]/button"));
+        logger.info("点击【退出登录】");
         click(By.xpath("//a[contains(text(),'退出登陆')]"));
         logger.info("================== 账号：" + userInfo.getAccount() + "结束提现==================");
     }
@@ -396,6 +382,8 @@ public class AutoGetMoney extends BaseTester {
 //            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
             (itemList.get(itemSize - 2)).click();
         }
+        // 滚动最底部
+        ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
 
         // 判断是否已经被收取
         List<WebElement> trlist = getElementList(By.xpath("//*/table/tbody/tr"));
