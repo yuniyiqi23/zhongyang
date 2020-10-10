@@ -2,3 +2,4 @@
 /logs/
 /target/
 AutoGetMoney.iml
+/src/main/resources/web_driver/
